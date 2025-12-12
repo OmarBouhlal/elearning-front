@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import Card from './Card';
 import Input from './Input';
-import Button from './Button';
+import Button from '../login/Button';
 
 const SignupForm = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -46,10 +47,14 @@ const SignupForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsLoading(true);
         if (validate()) {
             console.log('Form submitted:', formData);
             // Handle signup logic here
         }
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1500);
     };
 
     return (
@@ -113,8 +118,13 @@ const SignupForm = () => {
                     error={errors.confirmPassword}
                 />
 
-                <Button type="submit" variant="fullWidth">
-                    Sign Up
+                <Button
+                        type="submit"
+                        className="w-full"
+                        size="md"
+                        isLoading={isLoading}
+                    >
+                        Sign Up
                 </Button>
 
                 <div className="text-center text-sm text-gray-600">
