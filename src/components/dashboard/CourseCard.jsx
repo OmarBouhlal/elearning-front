@@ -5,7 +5,7 @@ const CourseCard = ({ course }) => {
     const { title, instructor, hours, description, image, level } = course;
 
     return (
-        <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 group">
+        <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 group z-0">
             {/* Thumbnail */}
             <div className="relative h-48 overflow-hidden">
                 <img

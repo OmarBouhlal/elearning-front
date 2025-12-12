@@ -28,7 +28,7 @@ const FilterBar = ({ selectedYear, setSelectedYear, selectedMajor, setSelectedMa
     const isYearDisabled = selectedYear <= 2;
 
     return (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100/80 mb-8 transition-all duration-300 hover:shadow-md h-[400px] md:h-auto">
+        <div className="relative z-30 bg-white p-6 rounded-2xl shadow-sm border border-gray-100/80 mb-8 transition-all duration-300 hover:shadow-md">
             <div className="flex flex-col md:flex-row md:items-start space-y-6 md:space-y-0 md:space-x-12">
 
                 {/* Year Selection */}

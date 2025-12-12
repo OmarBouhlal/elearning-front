@@ -349,7 +349,7 @@ const Dashboard = () => {
 
                         {/* Course Grid */}
                         {filteredCourses.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 z-0">
                                 {filteredCourses.map((course, index) => (
                                     // Stagger animation delay based on index could be added here
                                     <CourseCard key={course.id} course={course} />
