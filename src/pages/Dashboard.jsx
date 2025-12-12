@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import Navbar from '../components/dashboard/Navbar';
 import CourseCard from '../components/dashboard/CourseCard';
-import { Filter, BookOpen } from 'lucide-react';
+import FilterBar from '../components/dashboard/FilterBar';
+import { Filter, BookOpen, Sparkles } from 'lucide-react';
 
 const Dashboard = () => {
     const [selectedYear, setSelectedYear] = useState(1);
@@ -96,87 +97,76 @@ const Dashboard = () => {
     }, [selectedYear, selectedMajor, courses]);
 
     return (
-        <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
+        <div className="">
             {/* Navigation Bar */}
             <Navbar />
 
             {/* Main Content Area */}
-            <main className="pt-20 pb-12 px-4 sm:px-8">
+            <main className="pt-24 pb-12 px-4 sm:px-8">
                 <div className="max-w-[1280px] mx-auto">
 
-                    {/* Page Header */}
-                    <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900">Welcome Back, Student!</h1>
-                        <p className="mt-2 text-gray-600">Select your academic year to view relevant courses.</p>
-                    </div>
-
-                    {/* Filters */}
-                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
-                        <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-8">
-
-                            {/* Year Selection */}
-                            <div className="flex-1">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Academic Year</label>
-                                <div className="flex space-x-2 overflow-x-auto pb-2 md:pb-0">
-                                    {[1, 2, 3, 4, 5].map(year => (
-                                        <button
-                                            key={year}
-                                            onClick={() => setSelectedYear(year)}
-                                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${selectedYear === year
-                                                    ? 'bg-blue-600 text-white shadow-md'
-                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                                }`}
-                                        >
-                                            Year {year}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Major Selection - Only show for Year 3+ */}
-                            {selectedYear > 2 && (
-                                <div className="flex-1 animate-fadeIn">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Major</label>
-                                    <div className="relative">
-                                        <select
-                                            value={selectedMajor}
-                                            onChange={(e) => setSelectedMajor(e.target.value)}
-                                            className="block w-full pl-3 pr-10 py-2.5 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg bg-gray-50 border transition-colors cursor-pointer"
-                                        >
-                                            <option value="All">All Majors</option>
-                                            {majors.map(major => (
-                                                <option key={major} value={major}>{major}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                            )}
+                    {/* Hero Header */}
+                    <div className="mb-10 text-center md:text-left">
+                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100/50 text-blue-700 text-sm font-medium mb-4 backdrop-blur-sm border border-blue-200">
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Welcome Back, Student
                         </div>
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                            Your Learning Journey <br className="hidden md:block" />
+                            <span className="">
+                                Starts Here
+                            </span>
+                        </h1>
+                        <p className="mt-4 text-lg text-gray-600 max-w-2xl">
+                            Select your academic year to discover courses tailored to your curriculum.
+                            Unlock new skills and master your major.
+                        </p>
                     </div>
+
+                    {/* Integrated Filter Bar */}
+                    <FilterBar
+                        selectedYear={selectedYear}
+                        setSelectedYear={setSelectedYear}
+                        selectedMajor={selectedMajor}
+                        setSelectedMajor={setSelectedMajor}
+                        majors={majors}
+                    />
 
                     {/* Content Section */}
-                    <section>
-                        <h2 className="text-xl font-semibold mb-6 flex items-center">
-                            <span className="bg-blue-100 text-blue-600 p-1 rounded mr-2">
-                                <BookOpen className="w-5 h-5" />
+                    <section className="animate-fade-in-up">
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-2xl font-bold flex items-center text-gray-800">
+                                <span className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-2 rounded-lg mr-3 shadow-md shadow-blue-500/20">
+                                    <BookOpen className="w-5 h-5" />
+                                </span>
+                                {selectedYear <= 2
+                                    ? `Common Core Curriculum - Year ${selectedYear}`
+                                    : `${selectedMajor === 'All' ? 'All' : selectedMajor} Courses - Year ${selectedYear}`
+                                }
+                            </h2>
+                            <span className="text-sm font-medium text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
+                                {filteredCourses.length} {filteredCourses.length === 1 ? 'Course' : 'Courses'} Found
                             </span>
-                            {selectedYear <= 2 ? `Common Core - Year ${selectedYear}` : `${selectedMajor === 'All' ? 'All' : selectedMajor} Courses - Year ${selectedYear}`}
-                        </h2>
+                        </div>
 
                         {/* Course Grid */}
                         {filteredCourses.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {filteredCourses.map(course => (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                                {filteredCourses.map((course, index) => (
+                                    // Stagger animation delay based on index could be added here
                                     <CourseCard key={course.id} course={course} />
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-20 bg-white rounded-xl border border-dashed border-gray-300">
-                                <div className="mx-auto h-12 w-12 text-gray-400">
-                                    <Filter className="h-12 w-12" />
+                            <div className="text-center py-24 bg-white rounded-2xl border border-dashed border-gray-300 shadow-sm">
+                                <div className="mx-auto h-16 w-16 text-gray-300 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                                    <Filter className="h-8 w-8" />
                                 </div>
-                                <h3 className="mt-2 text-sm font-medium text-gray-900">No courses found</h3>
-                                <p className="mt-1 text-sm text-gray-500">Try adjusting your filters.</p>
+                                <h3 className="text-lg font-semibold text-gray-900">No courses found</h3>
+                                <p className="mt-2 text-gray-500 max-w-sm mx-auto">
+                                    We couldn't find any courses for the selected filter combination.
+                                    Try changing the major or year.
+                                </p>
                             </div>
                         )}
                     </section>
