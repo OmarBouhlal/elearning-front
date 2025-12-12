@@ -51,10 +51,14 @@ const SignupForm = () => {
         if (validate()) {
             console.log('Form submitted:', formData);
             // Handle signup logic here
-        }
-        setTimeout(() => {
+            setTimeout(() => {
             setIsLoading(false);
         }, 1500);
+         return
+        }
+        setIsLoading(false);
+
+        
     };
 
     return (
