@@ -1,5 +1,6 @@
 import React from 'react';
 import { Clock, User, BookOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const CourseCard = ({ course }) => {
     const { title, instructor, hours, description, image, level } = course;
@@ -41,9 +42,9 @@ const CourseCard = ({ course }) => {
                 </div>
 
                 {/* Action Button */}
-                <button className="w-full mt-4 bg-blue-50 text-blue-600 py-2 rounded-lg font-medium hover:bg-blue-600 hover:text-white transition-all duration-300">
+                <Link to={`/course/${course.id}`} className="block w-full mt-4 text-center bg-blue-50 text-blue-600 py-2 rounded-lg font-medium hover:bg-blue-600 hover:text-white transition-all duration-300">
                     View Course
-                </button>
+                </Link>
             </div>
         </div>
     );
