@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Filter, ChevronDown, GraduationCap, BookOpen, Check } from 'lucide-react';
+import { Filter, ChevronDown, GraduationCap, BookOpen, Check, Search } from 'lucide-react';
 
-const FilterBar = ({ selectedYear, setSelectedYear, selectedMajor, setSelectedMajor, majors }) => {
+const FilterBar = ({ selectedYear, setSelectedYear, selectedMajor, setSelectedMajor, searchTerm, setSearchTerm, majors }) => {
     const years = [1, 2, 3, 4, 5];
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -29,6 +29,21 @@ const FilterBar = ({ selectedYear, setSelectedYear, selectedMajor, setSelectedMa
 
     return (
         <div className="relative z-30 bg-white p-6 rounded-2xl shadow-sm border border-gray-100/80 mb-8 transition-all duration-300 hover:shadow-md">
+
+            {/* Search Input */}
+            <div className="mb-6 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                    type="text"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 sm:text-sm"
+                    placeholder="Search courses by title, instructor, or keywords..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+
             <div className="flex flex-col md:flex-row md:items-start space-y-6 md:space-y-0 md:space-x-12">
 
                 {/* Year Selection */}

@@ -1,6 +1,7 @@
 export const courses = [
     {
         id: 1,
+        pdfUrl: '/courses/machine-learning.pdf',
         title: 'Complete Web Design: from Figma to Webflow to Freelancing',
         instructor: 'Vako Shvili',
         hours: 19.5,
@@ -12,6 +13,7 @@ export const courses = [
     },
     {
         id: 2,
+        pdfUrl: '/courses/machine-learning.pdf',
         title: 'The Complete Python Pro Bootcamp for 2024',
         instructor: 'Angela Yu',
         hours: 100,

@@ -8,12 +8,24 @@ import { courses } from '../data/courses';
 const Dashboard = () => {
     const [selectedYear, setSelectedYear] = useState(1);
     const [selectedMajor, setSelectedMajor] = useState('All');
+    const [searchTerm, setSearchTerm] = useState('');
 
     const majors = ['Mechanical', 'Electromechanical', 'AI', 'Software', 'Civil'];
 
 
     const filteredCourses = useMemo(() => {
         return courses.filter(course => {
+            // Search filter
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                const matchesSearch =
+                    course.title.toLowerCase().includes(term) ||
+                    course.instructor.toLowerCase().includes(term) ||
+                    (course.description && course.description.toLowerCase().includes(term));
+
+                if (!matchesSearch) return false;
+            }
+
             // Year filter
             if (course.year !== selectedYear) return false;
 
@@ -27,7 +39,7 @@ const Dashboard = () => {
 
             return true;
         });
-    }, [selectedYear, selectedMajor, courses]);
+    }, [selectedYear, selectedMajor, courses, searchTerm]);
 
     return (
         <div className="">
@@ -62,6 +74,8 @@ const Dashboard = () => {
                         setSelectedYear={setSelectedYear}
                         selectedMajor={selectedMajor}
                         setSelectedMajor={setSelectedMajor}
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
                         majors={majors}
                     />
 

@@ -36,8 +36,8 @@ const CourseCard = ({ course }) => {
                         <span>{instructor}</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                        <Clock className="h-4 w-4 text-gray-400" />
-                        <span>{hours}h</span>
+                        <BookOpen className="h-4 w-4 text-gray-400" />
+                        <span>{hours}h read</span>
                     </div>
                 </div>
 
