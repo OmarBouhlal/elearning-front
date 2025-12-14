@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import Course from './pages/Course'
+import Enrollments from './pages/Enrollments'
 function App() {
 
 
@@ -15,6 +16,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/enrollments" element={<Enrollments />} />
           <Route path="/course/:id" element={<Course />} />
         </Routes>
       </div>
