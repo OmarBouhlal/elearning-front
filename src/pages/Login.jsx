@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/login/Button';
 import Input from '../components/login/Input';
 import { BookOpen, Lock, Mail } from 'lucide-react';
+import authService from '../services/authService';
 
 const Login = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -13,15 +16,23 @@ const Login = () => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
+        setError(''); // Clear error on change
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
+        setError('');
+
+        try {
+            await authService.login(formData);
+            navigate('/dashboard');
+        } catch (err) {
+            console.error(err);
+            setError('Invalid email or password');
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     return (
@@ -36,6 +47,11 @@ const Login = () => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    {error && (
+                        <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm text-center">
+                            {error}
+                        </div>
+                    )}
                     <div className="space-y-4">
                         <div className="relative">
                             <Input

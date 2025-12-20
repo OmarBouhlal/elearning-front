@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from './Card';
 import Input from './Input';
 import Button from '../login/Button';
+import authService from '../../services/authService';
 
 const SignupForm = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        role: ''
     });
     const [errors, setErrors] = useState({});
+    const [serverError, setServerError] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,6 +32,7 @@ const SignupForm = () => {
                 [name]: ''
             }));
         }
+        setServerError('');
     };
 
     const validate = () => {
@@ -45,20 +51,31 @@ const SignupForm = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        if (validate()) {
-            console.log('Form submitted:', formData);
-            // Handle signup logic here
-            setTimeout(() => {
-            setIsLoading(false);
-        }, 1500);
-         return
-        }
-        setIsLoading(false);
+        setServerError('');
 
-        
+        if (validate()) {
+            try {
+                const registerData = {
+                    firstname: formData.firstName,
+                    lastname: formData.lastName,
+                    email: formData.email,
+                    password: formData.password,
+                    role: formData.role
+                };
+                await authService.register(registerData);
+                navigate('/login');
+            } catch (err) {
+                console.error(err);
+                setServerError('Registration failed. Please try again.');
+            } finally {
+                setIsLoading(false);
+            }
+        } else {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -69,6 +86,11 @@ const SignupForm = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+                {serverError && (
+                    <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm text-center">
+                        {serverError}
+                    </div>
+                )}
                 <div className="flex gap-4">
                     <Input
                         label="First Name"
@@ -102,6 +124,38 @@ const SignupForm = () => {
                     error={errors.email}
                 />
 
+                <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">I am a</label>
+                    <div className="flex gap-4 mt-2">
+                        <label className={`flex-1 relative border rounded-xl p-4 cursor-pointer transition-all ${formData.role === 'STUDENT' ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-gray-200 hover:border-gray-300'}`}>
+                            <input
+                                type="radio"
+                                name="role"
+                                value="STUDENT"
+                                checked={formData.role === 'STUDENT'}
+                                onChange={handleChange}
+                                className="sr-only"
+                            />
+                            <div className="text-center">
+                                <span className={`block text-sm font-semibold ${formData.role === 'STUDENT' ? 'text-blue-700' : 'text-gray-900'}`}>Student</span>
+                            </div>
+                        </label>
+                        <label className={`flex-1 relative border rounded-xl p-4 cursor-pointer transition-all ${formData.role === 'INSTRUCTOR' ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' : 'border-gray-200 hover:border-gray-300'}`}>
+                            <input
+                                type="radio"
+                                name="role"
+                                value="INSTRUCTOR"
+                                checked={formData.role === 'INSTRUCTOR'}
+                                onChange={handleChange}
+                                className="sr-only"
+                            />
+                            <div className="text-center">
+                                <span className={`block text-sm font-semibold ${formData.role === 'INSTRUCTOR' ? 'text-blue-700' : 'text-gray-900'}`}>Instructor</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
                 <Input
                     label="Password"
                     name="password"
@@ -123,12 +177,12 @@ const SignupForm = () => {
                 />
 
                 <Button
-                        type="submit"
-                        className="w-full"
-                        size="md"
-                        isLoading={isLoading}
-                    >
-                        Sign Up
+                    type="submit"
+                    className="w-full"
+                    size="md"
+                    isLoading={isLoading}
+                >
+                    Sign Up
                 </Button>
 
                 <div className="text-center text-sm text-gray-600">

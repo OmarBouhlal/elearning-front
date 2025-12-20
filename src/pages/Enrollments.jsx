@@ -1,19 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/dashboard/Navbar';
 import CourseCard from '../components/dashboard/CourseCard';
-import { getEnrolledCourses } from '../utils/enrollmentStorage';
-import { courses } from '../data/courses';
-import { BookMarked, ArrowRight } from 'lucide-react';
+import enrollmentService from '../services/enrollmentService';
+import { BookMarked, ArrowRight, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Enrollments = () => {
     const [enrolledCoursesList, setEnrolledCoursesList] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const enrolledIds = getEnrolledCourses();
-        const filtered = courses.filter(course => enrolledIds.includes(course.id));
-        setEnrolledCoursesList(filtered);
+        const fetchEnrollments = async () => {
+            try {
+                const enrollments = await enrollmentService.getMyEnrollments();
+                // Extract course objects from enrollments
+                const courses = enrollments.map(e => e.course);
+                setEnrolledCoursesList(courses);
+            } catch (error) {
+                console.error("Failed to fetch enrollments", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEnrollments();
     }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+            </div>
+        );
+    }
 
     return (
         <div>

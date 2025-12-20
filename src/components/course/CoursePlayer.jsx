@@ -1,22 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Check } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { isEnrolled, enrollCourse, unenrollCourse } from '../../utils/enrollmentStorage';
+import { Check, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import authenticationService from '../../services/authService'; // Check if user logged in
+import courseService from '../../services/courseService';
+import enrollmentService from '../../services/enrollmentService';
 
 const CoursePlayer = ({ course }) => {
+    const navigate = useNavigate();
     const [enrolled, setEnrolled] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [initialCheckDone, setInitialCheckDone] = useState(false);
 
     useEffect(() => {
-        setEnrolled(isEnrolled(course.id));
+        const checkEnrollment = async () => {
+            const user = authenticationService.getCurrentUser();
+            if (!user) {
+                setInitialCheckDone(true);
+                return;
+            }
+
+            try {
+                const myEnrollments = await enrollmentService.getMyEnrollments();
+                // Check if course.id is in myEnrollments
+                // The API returns EnrollmentResponseDTO which contains 'course' object
+                const isEnrolled = myEnrollments.some(e => e.course.id.toString() === course.id.toString());
+                setEnrolled(isEnrolled);
+            } catch (err) {
+                console.error("Failed to check enrollment", err);
+            } finally {
+                setInitialCheckDone(true);
+            }
+        };
+        checkEnrollment();
     }, [course.id]);
 
-    const handleEnrollToggle = () => {
-        if (enrolled) {
-            unenrollCourse(course.id);
-            setEnrolled(false);
-        } else {
-            enrollCourse(course.id);
+    const handleEnroll = async () => {
+        const user = authenticationService.getCurrentUser();
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
+        if (enrolled) return; // Already enrolled
+
+        setLoading(true);
+        try {
+            await courseService.enrollInCourse(course.id);
             setEnrolled(true);
+        } catch (err) {
+            console.error("Enrollment failed", err);
+            alert("Failed to enroll. Please try again.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -49,14 +84,17 @@ const CoursePlayer = ({ course }) => {
 
                 <div className="flex gap-2 mb-5">
                     <button
-                        onClick={handleEnrollToggle}
+                        onClick={handleEnroll}
+                        disabled={loading || enrolled || !initialCheckDone}
                         className={`flex-1 font-bold py-2.5 px-4 rounded-xl transition-colors flex items-center justify-center text-sm shadow-sm
                             ${enrolled
-                                ? 'bg-green-100 text-green-700 hover:bg-green-200 border border-green-200'
+                                ? 'bg-green-100 text-green-700 hover:bg-green-200 border border-green-200 cursor-default'
                                 : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30'
-                            }`}
+                            } ${loading || !initialCheckDone ? 'opacity-70 cursor-wait' : ''}`}
                     >
-                        {enrolled ? (
+                        {(loading || !initialCheckDone) ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : enrolled ? (
                             <>
                                 <Check className="w-4 h-4 mr-2" />
                                 Enrolled

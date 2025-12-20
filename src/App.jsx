@@ -6,6 +6,7 @@ import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import Course from './pages/Course'
 import Enrollments from './pages/Enrollments'
+import CreateCourse from './pages/CreateCourse'
 function App() {
 
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/Signup" element={<Signup />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/enrollments" element={<Enrollments />} />
+          <Route path="/create-course" element={<CreateCourse />} />
           <Route path="/course/:id" element={<Course />} />
         </Routes>
       </div>
