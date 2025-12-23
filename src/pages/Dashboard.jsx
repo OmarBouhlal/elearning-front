@@ -17,7 +17,7 @@ const Dashboard = () => {
     const [error, setError] = useState(null);
 
     const checkRole = authService.getUserRole();
-    const isInstructor = checkRole === 'INSTRUCTOR';
+    const isInstructor = checkRole === 'ROLE_INSTRUCTOR';
 
     const majors = ['Mechanical', 'Electromechanical', 'AI', 'Software', 'Civil'];
 

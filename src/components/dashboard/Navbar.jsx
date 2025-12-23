@@ -7,8 +7,8 @@ const Navbar = () => {
     const navigate = useNavigate();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
-    const role = authService.getUserRole();
-    const isInstructor = role === 'INSTRUCTOR';
+    const user = authService.getCurrentUser();
+    const isInstructor = user.role === 'ROLE_INSTRUCTOR';
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -88,12 +88,12 @@ const Navbar = () => {
                                             <User className="h-6 w-6" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-bold text-gray-900 leading-tight">User Name</p>
+                                            <p className="text-sm font-bold text-gray-900 leading-tight">{user.sub.split('@')[0]}</p>
                                             <p className="text-xs text-gray-500 font-medium">{isInstructor ? 'Instructor' : 'Student'}</p>
                                         </div>
                                     </div>
                                     <p className="text-xs text-gray-400 mt-2 truncate bg-gray-50 py-1 px-2 rounded-lg border border-gray-100">
-                                        user@elearn.university
+                                        {user.sub}
                                     </p>
                                 </div>
 
